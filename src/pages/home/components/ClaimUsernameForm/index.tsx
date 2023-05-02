@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { ArrowRight } from 'phosphor-react'
 import { Button, Text, TextInput } from '@ignite-ui/react'
@@ -19,16 +20,18 @@ const claumUsernameFormSchema = z.object({
 type ClaumUsernameFormData = z.infer<typeof claumUsernameFormSchema>
 
 export function ClaumUsernameForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ClaumUsernameFormData>({
     resolver: zodResolver(claumUsernameFormSchema),
   })
 
-  function handleClaimUsername(data: ClaumUsernameFormData) {
-    console.log(data)
+  async function handleClaimUsername(data: ClaumUsernameFormData) {
+    const { username } = data
+    await router.push(`/register?username=${username}`)
   }
 
   return (
@@ -41,7 +44,7 @@ export function ClaumUsernameForm() {
           autoComplete="off"
           {...register('username')}
         />
-        <Button size="sm" type="submit">
+        <Button size="sm" type="submit" disabled={isSubmitting}>
           Reservar
           <ArrowRight />
         </Button>
